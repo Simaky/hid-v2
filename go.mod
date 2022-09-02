@@ -1,3 +1,3 @@
-module github.com/karalabe/hid
+module github.com/Simaky/hid-v2
 
 go 1.12

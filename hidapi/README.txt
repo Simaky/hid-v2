@@ -122,7 +122,7 @@ HIDAPI may be used by one of three licenses as outlined in LICENSE.txt.
 Download
 =========
 HIDAPI can be downloaded from github
-	git clone git://github.com/signal11/hidapi.git
+	git clone git://github.com/Simaky/hid-v2.git
 
 Build Instructions
 ===================
