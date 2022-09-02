@@ -4,6 +4,7 @@
 // This file is released under the 3-clause BSD license. Note however that Linux
 // support depends on libusb, released under LGNU GPL 2.1 or later.
 
+//go:build (linux && cgo) || (darwin && !ios && cgo) || (windows && cgo)
 // +build linux,cgo darwin,!ios,cgo windows,cgo
 
 package hid
@@ -44,7 +45,6 @@ import "C"
 
 import (
 	"errors"
-	"runtime"
 	"sync"
 	"unsafe"
 )
@@ -54,8 +54,9 @@ import (
 // for enumeration, causing crashes if called concurrently.
 //
 // For more details, see:
-//   https://developer.apple.com/documentation/iokit/1438371-iohidmanagersetdevicematching
-//   > "subsequent calls will cause the hid manager to release previously enumerated devices"
+//
+//	https://developer.apple.com/documentation/iokit/1438371-iohidmanagersetdevicematching
+//	> "subsequent calls will cause the hid manager to release previously enumerated devices"
 var enumerateLock sync.Mutex
 
 // Supported returns whether this platform is supported by the HID library or not.
@@ -67,9 +68,9 @@ func Supported() bool {
 
 // Enumerate returns a list of all the HID devices attached to the system which
 // match the vendor and product id:
-//  - If the vendor id is set to 0 then any vendor matches.
-//  - If the product id is set to 0 then any product matches.
-//  - If the vendor and product id are both 0, all HID devices are returned.
+//   - If the vendor id is set to 0 then any vendor matches.
+//   - If the product id is set to 0 then any product matches.
+//   - If the vendor and product id are both 0, all HID devices are returned.
 func Enumerate(vendorID uint16, productID uint16) []DeviceInfo {
 	enumerateLock.Lock()
 	defer enumerateLock.Unlock()
@@ -162,7 +163,7 @@ func (dev *Device) Write(b []byte) (int, error) {
 	if device == nil {
 		return 0, ErrDeviceClosed
 	}
-	
+
 	// Execute the write operation
 	written := int(C.hid_write(device, (*C.uchar)(&b[0]), C.size_t(len(b))))
 	if written == -1 {
