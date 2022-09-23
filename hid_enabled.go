@@ -233,8 +233,9 @@ func (dev *Device) SendFeatureReport(b []byte) (int, error) {
 	return written, nil
 }
 
-// Read retrieves an input report from a HID device.
-func (dev *Device) Read(b []byte) (int, error) {
+// Read retrieves an input report from a HID device with timeout
+// blocking and waiting for read response if timeout is 0.
+func (dev *Device) Read(b []byte, timeout int) (int, error) {
 	// Aborth if nothing to read
 	if len(b) == 0 {
 		return 0, nil
@@ -248,7 +249,7 @@ func (dev *Device) Read(b []byte) (int, error) {
 		return 0, ErrDeviceClosed
 	}
 	// Execute the read operation
-	read := int(C.hid_read(device, (*C.uchar)(&b[0]), C.size_t(len(b))))
+	read := int(C.hid_read_timeout(device, (*C.uchar)(&b[0]), C.size_t(len(b)), C.int(timeout)))
 	if read == -1 {
 		// If the read failed, verify if closed or other error
 		dev.lock.Lock()
