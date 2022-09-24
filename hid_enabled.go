@@ -233,9 +233,14 @@ func (dev *Device) SendFeatureReport(b []byte) (int, error) {
 	return written, nil
 }
 
-// Read retrieves an input report from a HID device with timeout
+// Read retrieves an input report from a HID device.
+func (dev *Device) Read(b []byte) (int, error) {
+	return dev.ReadWithTimeout(b, 0)
+}
+
+// ReadWithTimeout retrieves an input report from a HID device with timeout
 // blocking and waiting for read response if timeout is 0.
-func (dev *Device) Read(b []byte, timeout int) (int, error) {
+func (dev *Device) ReadWithTimeout(b []byte, timeout int) (int, error) {
 	// Aborth if nothing to read
 	if len(b) == 0 {
 		return 0, nil
